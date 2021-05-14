@@ -3,35 +3,44 @@
     <div class="item-wrapper">
       <h1>Agile Software Development</h1>
       <h2>Core and Principles</h2>
-      <div class="item-list">
+      <hr>
+      <div v-if="itemList.length > 0" class="item-list">
         <ul>
-          <li v-for="(item, index) in 20" :key="index">
+          <li v-for="(item, index) in itemList" :key="index">
             <p>
-              {{ 'Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles Core and Principles' }}
+              {{ item.Item }}
             </p>
             <img src="../assets/edit-icon.png" class="img-edit" alt="" width="35" height="35" @click="Edit(item)">
             <img src="../assets/delete-icon.png" class="img-delete" alt="" width="35" height="35" @click="Delete(item)">
           </li>
         </ul>
       </div>
+      <div v-else class="item-list">
+        <span>~No Data~</span>
+      </div>
     </div>
 
     <!-- Add box -->
     <AddBox
       v-show="showAdd"
-      @close="showAdd = false"/>
+      @close="showAdd = false"
+      @refresh="GetAllData"/>
     <!-- end -->
 
     <!-- edit box -->
     <EditBox
-      v-show="showEdit"
-      @close="showEdit = false"/>
+      v-if="showEdit"
+      @close="showEdit = false"
+      @refresh="GetAllData"
+      :item="item"/>
     <!-- end -->
 
     <!-- delete box -->
     <DeleteBox
       v-show="showDelete"
-      @close="showDelete = false"/>
+      @close="showDelete = false"
+      @refresh="GetAllData"
+      :item="item"/>
     <!-- end -->
 
     <!-- Add button -->
@@ -57,24 +66,40 @@ import DeleteBox from '@/components/DeleteBox.vue';
   },
 })
 export default class Home extends Vue {
-  private item: string = '';
   private showAdd: boolean = false;
   private showEdit: boolean = false;
   private showDelete: boolean = false;
-  private itemList: any[] = [
-    1, 2, 3
-  ];
-
+  private itemList: any[] = [];
+  private item: any = {};
 
   private Edit(item: any) {
     this.showEdit = true;
+    this.item = item;
   }
 
   private Delete(item: any) {
     this.showDelete = true;
+    this.item = item;
   }
 
-  private created() {}
+  private GetAllData() {
+    let params = {
+      request: 1,
+      data: {}
+    };
+
+    this.$http.post(this.$api.AgileService, params)
+      .then((res: any) => {
+        this.itemList = res.data;
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  }
+
+  private async created() {
+    await this.GetAllData();
+  }
 
   private mounted() {}
 
@@ -109,6 +134,7 @@ export default class Home extends Vue {
 
 .item-list ul li img {
   position: absolute;
+  cursor: pointer;
   right: 0;
   top: 5px;
 }

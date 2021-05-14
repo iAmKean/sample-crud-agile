@@ -6,24 +6,44 @@
       <div class="action-box">
         <h3>Are you sure you want to delete it?</h3>
         <button @click="CloseAdd()" class="delete-btn margin-right">Cancel</button>
-        <button class="delete-btn">Yes</button>
+        <button class="delete-btn" @click="DeleteData()">Yes</button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Emit } from 'vue-property-decorator';
+import { Component, Vue, Emit, Prop } from 'vue-property-decorator';
 
 @Component({
   components: {},
 })
 export default class AddBox extends Vue {
-  private item: string = '';
+  @Prop({type: Object, default: () => { {} } }) public readonly item!: any;
+
 
   @Emit('close')
   private CloseAdd() {
     // close action
+  }
+
+  @Emit('refresh') send() {}
+  private DeleteData() {
+    let params = {
+      request: 4,
+      data: {
+        id: this.item.ID
+      }
+    };
+
+    this.$http.post(this.$api.AgileService, params)
+      .then((res: any) => {
+        this.CloseAdd();
+        this.send();
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
   }
 }
 </script>
