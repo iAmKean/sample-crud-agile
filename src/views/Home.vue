@@ -17,45 +17,21 @@
     </div>
 
     <!-- Add box -->
-    <div v-show="showAdd" class="popup-action add-box">
-      <div class="popup-mask"></div>
-      <div class="content">
-        <img src="../assets/close-icon.png" alt="" width="25" height="25" @click="showAdd = false">
-        <div class="action-box">
-          <h3>New Item</h3>
-          <input type="text" v-model="item" placeholder="Enter value">
-          <button>Save</button>
-        </div>
-      </div>
-    </div>
+    <AddBox
+      v-show="showAdd"
+      @close="showAdd = false"/>
     <!-- end -->
 
     <!-- edit box -->
-    <div v-show="showEdit" class="popup-action add-box">
-      <div class="popup-mask"></div>
-      <div class="content">
-        <img src="../assets/close-icon.png" alt="" width="25" height="25" @click="showEdit = false">
-        <div class="action-box">
-          <h3>Modify Item</h3>
-          <input type="text" v-model="item" placeholder="Enter value">
-          <button>Update</button>
-        </div>
-      </div>
-    </div>
+    <EditBox
+      v-show="showEdit"
+      @close="showEdit = false"/>
     <!-- end -->
 
     <!-- delete box -->
-    <div v-show="showDelete" class="popup-action add-box">
-      <div class="popup-mask"></div>
-      <div class="content">
-        <img src="../assets/close-icon.png" alt="" width="25" height="25" @click="showDelete = false">
-        <div class="action-box">
-          <h3>Are you sure you want to delete it?</h3>
-          <button @click="showDelete = false" class="delete-btn margin-right">Cancel</button>
-          <button class="delete-btn">Yes</button>
-        </div>
-      </div>
-    </div>
+    <DeleteBox
+      v-show="showDelete"
+      @close="showDelete = false"/>
     <!-- end -->
 
     <!-- Add button -->
@@ -69,9 +45,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import AddBox from '@/components/AddBox.vue';
+import EditBox from '@/components/EditBox.vue';
+import DeleteBox from '@/components/DeleteBox.vue';
 
 @Component({
-  components: {},
+  components: {
+    AddBox,
+    EditBox,
+    DeleteBox
+  },
 })
 export default class Home extends Vue {
   private item: string = '';
@@ -98,7 +81,7 @@ export default class Home extends Vue {
 }
 </script>
 
-<style scoped>
+<style>
 .item-list ul {
   padding: 0px 100px 0px 20px;
 }
@@ -110,17 +93,20 @@ export default class Home extends Vue {
   min-height: 50px;
   line-height: 50px;
   font-size: 14px;
-  padding-right: 110px;
+  padding: 0px 110px 0px 110px;
 }
 
 .item-list ul li:not(:last-child) {
   margin-bottom: 10px;
 } 
+
 .item-list ul li p {
   overflow: hidden;
   line-height: 1.5;
   word-break: break-all;
+  margin: 0;
 }
+
 .item-list ul li img {
   position: absolute;
   right: 0;
@@ -130,6 +116,7 @@ export default class Home extends Vue {
 .item-list ul li img.img-edit {
   right: 45px;
 }
+
 .popup-action {
   border: 1px solid #ccc;
   position: fixed;
@@ -177,6 +164,7 @@ export default class Home extends Vue {
   margin-top: 20px;
   display: block;
 }
+
 .popup-action .action-box input {
   display: block;
   width: 80%;
@@ -209,6 +197,6 @@ export default class Home extends Vue {
   cursor: pointer;
   position: fixed;
   bottom: 10px;
-  right: 20px;
+  left: 20px;
 }
 </style>
